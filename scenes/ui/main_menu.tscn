@@ -111,32 +111,18 @@ theme_override_font_sizes/normal_font_size = 16
 text = "Credits"
 
 [node name="CreditsLabel" type="RichTextLabel" parent="."]
-offset_left = 349.0
-offset_top = 54.0
-offset_right = 468.0
-offset_bottom = 167.0
+offset_left = 443.0
+offset_top = 70.0
+offset_right = 562.0
+offset_bottom = 183.0
 mouse_filter = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_y = 3
 theme_override_font_sizes/normal_font_size = 12
-text = "- Coffe
-
-- More people"
-
-[node name="CreditsLabel2" type="RichTextLabel" parent="."]
-offset_left = 507.0
-offset_top = 46.0
-offset_right = 632.0
-offset_bottom = 150.0
-mouse_filter = 2
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 3
-theme_override_font_sizes/normal_font_size = 12
-text = "- More people
-"
+text = "- Coffe"
 
 [node name="1-coffe" type="Sprite2D" parent="."]
-position = Vector2(410, 60)
+position = Vector2(468, 103)
 texture = ExtResource("2_hdcp8")
 
 [node name="MenuArt0" type="Sprite2D" parent="."]

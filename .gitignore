@@ -14,4 +14,7 @@ export_presets.cfg
 data_*/
 mono_crash.*.json
 
-.gitignore
+
+# Other people on the project don't need these
+addons/godot-vim/
+addons/script-tabs
