@@ -8,7 +8,7 @@ func _init() -> void:
 "If this card is discarded, you die!
 Move action: Move to any adjacent tile.
 Attack action: Attack any adjacent enemy."
-	
+
 
 func get_available_positions(player_pos:Vector2i) -> Array[Vector2i]:
 	var ret:Array[Vector2i] = []
@@ -32,3 +32,7 @@ func get_available_positions(player_pos:Vector2i) -> Array[Vector2i]:
 
 func on_discard() -> void:
 	assert(false, "You died! Currently there is no death functionality so I'm just gonna kill your game.")
+	
+
+func get_sprite_coords() -> Vector2i:
+	return Vector2i(0, 0)

@@ -18,3 +18,6 @@ func get_available_positions(player_pos:Vector2i) -> Array[Vector2i]:
 
 # Note the card can still be used to discard, which may allow the player to
 # save themselves discarding more valuable cards
+
+func get_sprite_coords() -> Vector2i:
+	return Vector2i(5, 0)

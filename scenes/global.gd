@@ -69,3 +69,16 @@ func fade_black(to:float, duration:float):
 	var tween = create_tween()
 	tween.tween_property($GlobalUI/FadeBlackRect, "color:a", to, duration)
 	await tween.finished
+
+func get_player_tile():
+	return global_to_tile_position(get_tree().get_first_node_in_group("player").global_position)
+
+func get_player_option_tiles() -> Array[Vector2i]:
+	var ret : Array[Vector2i] = []
+	var gm:GameManager = get_tree().get_first_node_in_group("game_manager")
+	if !gm: return ret
+	
+	for card in gm.players_cards:
+		ret.append(card.get_available_positions(get_player_tile()))
+	
+	return ret

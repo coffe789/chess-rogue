@@ -7,6 +7,8 @@ const tile_hover_rect_packed = preload("res://scenes/ui/tile_hover_rect.tscn")
 const ENEMY_HOVER_COLOR = Color("dd395264")
 const FLOOR_HOVER_COLOR = Color("80f4a764")
 
+const TURN_LEN = 5
+
 enum GameState {
 	BUSY, # Indicates not to do anything in _process()
 	PLAYER_TURN,
@@ -28,7 +30,10 @@ var available_rooms = {
 var players_cards : Array[CardResource] = [
 	CardKingBasic.new(),
 	CardKnightBasic.new(),
-	CardPawnBasic.new(),
+	#CardPawnBasic.new(),
+	CardBishopBasic.new(),
+	#CardQueenBasic.new(),
+	#CardRookBasic.new(),
 ]
 var max_player_cards = 3 # Note - currently this doesn't do anything
 
@@ -127,10 +132,13 @@ func show_available_actions():
 func change_game_state(to:GameState):
 	match to:
 		GameState.PLAYER_TURN:
+			$TurnTimer.start(TURN_LEN)
+			hide_available_actions()
 			show_available_actions()
 		
 		GameState.ENEMY_TURN:
-			pass
+			if get_tree().get_nodes_in_group("enemy"):
+				hide_available_actions()
 	
 	game_state = to
 
@@ -151,7 +159,15 @@ func _input(event: InputEvent) -> void:
 			var num_pressed = event.keycode - KEY_0
 			if num_pressed - 1 < len(players_cards):
 				selected_card = players_cards[num_pressed - 1] # Calls setter
-
+	# Idk if this is a good way of doing things, worth testing out
+	if event is InputEventMouseButton and event.is_pressed():
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			var curr_idx = players_cards.find(selected_card)
+			selected_card = players_cards[(len(players_cards) + curr_idx - 1) % len(players_cards)]
+		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			var curr_idx = players_cards.find(selected_card)
+			selected_card = players_cards[(curr_idx + 1) % len(players_cards)]
+			
 
 func _process(_delta: float) -> void:
 	match game_state:
@@ -163,25 +179,33 @@ func _process(_delta: float) -> void:
 					var mp = get_global_mouse_position()
 					var tile_pos = Vector2i(mp.x / Global.TILE_SIZE, mp.y / Global.TILE_SIZE)
 					var p = get_player()
-
+					
 					if (tile_pos in selected_card.get_available_positions(get_player_tile_pos())):
-						change_game_state(GameState.BUSY)
 						hide_available_actions()
+						change_game_state(GameState.BUSY)
 						if Global.is_enemy_on_tile(tile_pos):
 							get_player().get_node("AnimationPlayer").play("attack")
 							await Global.attack_enemy_at_tile(tile_pos, 1)
-						else:
+							
+						await get_tree().physics_frame
+						if !Global.is_enemy_on_tile(tile_pos):
 							await p.move(tile_pos)
 						change_game_state(GameState.ENEMY_TURN)
+			elif $TurnTimer.is_stopped():
+				change_game_state(GameState.ENEMY_TURN)
 		
 		GameState.ENEMY_TURN:
-			# TODO
-			Global.emit_signal("game_tick")
+			change_game_state(GameState.BUSY)
+			var events = []
+			for enemy in get_tree().get_nodes_in_group("enemy"):
+				events.append(enemy.move())
+				await get_tree().physics_frame # So enemies can tell if they are going to overlap with physics test
+			for event in events:
+				await event.call()
 			change_game_state(GameState.PLAYER_TURN)
 
 
 func _on_test_damage_button_pressed() -> void:
-	
 	# Once we choose a card to discard, this lambda is called
 	var card_choice_callback = func (card_choice:CardResource):
 		card_choice.on_discard()

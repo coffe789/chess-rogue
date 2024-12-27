@@ -4,7 +4,7 @@ extends Node2D
 
 @export var room_size = Vector2i(20, 11) # This is the minimum size, only go up from here
 
-@export var min_enemy_count = 0
+@export var min_enemy_count = 2
 @export var max_enemy_count = 10
 var enemy_count = randi_range(min_enemy_count, max_enemy_count) # This is then clamped to the number of spawners in the room
 

@@ -16,5 +16,6 @@ mono_crash.*.json
 
 
 # Other people on the project don't need these
+# Tho it might cause some kind of error since the project is probably expecting these
 addons/godot-vim/
 addons/script-tabs

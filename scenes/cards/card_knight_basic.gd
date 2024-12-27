@@ -29,3 +29,7 @@ func get_available_positions(player_pos:Vector2i) -> Array[Vector2i]:
 		if Global.is_floor_tile(target_tile):
 			ret.append(target_tile)
 	return ret
+
+
+func get_sprite_coords() -> Vector2i:
+	return Vector2i(3, 0)
